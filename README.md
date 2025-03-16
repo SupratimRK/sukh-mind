@@ -4,13 +4,13 @@ Sukh-Mind is an AI-powered mental health chatbot designed to provide emotional s
 
 ## 🔹 Overview
 
-Sukh-Mind utilizes **Google’s AI Studio and Gemini AI** to deliver intelligent responses to users. The frontend is built with **Next.js and TypeScript**, ensuring a responsive and seamless user experience. This project eliminates the need for a backend, directly interacting with the Gemini API for enhanced performance and efficiency.
+Sukh-Mind utilizes **Google’s AI Studio and Gemini AI** to deliver intelligent responses to users. The frontend is built with **React, JavaScript, and CSS**, ensuring a responsive and seamless user experience. This project eliminates the need for a backend, directly interacting with the Gemini API for enhanced performance and efficiency.
 
 ## ✨ Key Features
 
 - **AI-Powered Support** – Offers emotional assistance and stress management guidance.
 - **Google Gemini AI Integration** – Leverages AI for personalized responses.
-- **Modern Frontend** – Developed with Next.js and TypeScript for scalability and performance.
+- **Modern Frontend** – Developed with React, JavaScript, and CSS for scalability and performance.
 - **Seamless API Communication** – Direct interaction with Gemini AI, eliminating backend dependencies.
 - **Secure API Key Management** – Uses environment variables for safe API key storage.
 
@@ -80,7 +80,7 @@ We welcome contributions! Follow these steps to contribute:
 2. **Clone your forked repository**:
 
 ```bash
-git clone https://github.com/your-username/Sukh-Mind.git
+git clone https://github.com/Sukh-Mind/Sukh-Mind.git
 ```
 
 3. **Create a new branch** for your feature or bug fix:
