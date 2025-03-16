@@ -1,6 +1,6 @@
 # Sukh-Mind
 
-Sukh-Mind is an AI-powered mental health chatbot designed to provide emotional support, stress management techniques, and well-being assistance. Developed for a hackathon by **Ranit Kumar Manik**, **Soumen Tunga**, [Sagnik Metiya](https://www.linkedin.com/in/sagnikmetiya/), and **Anish Karnar**, this project leverages cutting-edge AI technology to enhance mental health support.
+Sukh-Mind is an AI-powered mental health chatbot designed to provide emotional support, stress management techniques, and well-being assistance. Developed for a hackathon by **Ranit Kumar Manik**, **Soumen Tunga**, **[Sagnik Metiya]**(https://www.linkedin.com/in/sagnikmetiya/), and [**Anish Kanrar**](https://www.linkedin.com/in/anish-kanrar-1b716128a/), this project leverages cutting-edge AI technology to enhance mental health support.
 
 ## 🔹 Overview
 
