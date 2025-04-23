@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import "./Main.css";
 import { Context } from "../../context/Context.jsx";
+import { availableModels } from "../../config/gemini";
 
 const Main = () => {
   const {
@@ -25,6 +26,8 @@ const Main = () => {
     resultData,
     setInput,
     input,
+    selectedModel,
+    setSelectedModel,
   } = useContext(Context);
   const resultRef = useRef(null);
   const [rows, setRows] = useState(1);
@@ -46,7 +49,7 @@ const Main = () => {
     if (input.trim() === "") return;
     setInput("");
     onSent();
-  }, [input, onSent]);
+  }, [input, onSent, setInput]);
 
   const handleKeyUp = useCallback(
     (e) => {
@@ -58,10 +61,31 @@ const Main = () => {
     [handleSend],
   );
 
+  const handleModelChange = (event) => {
+    setSelectedModel(event.target.value);
+  };
+
   return (
     <main className="main">
       <nav className="nav">
-        <p tabIndex={0}>SukhMind AI</p>
+        <div className="nav-header-content">
+          <p tabIndex={0} className="nav-title">SukhMind AI</p>
+          <div className="nav-model-selector">
+            <select
+              id="model-select-main"
+              value={selectedModel}
+              onChange={handleModelChange}
+              disabled={loading}
+              aria-label="Select AI Model"
+            >
+              {availableModels.map((model) => (
+                <option key={model.id} value={model.id}>
+                  {model.name.replace("Gemini ", "").replace(" (Experimental)", " (exp)")}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
       </nav>
       <div className="main-container">
         {!showResult ? (
@@ -94,7 +118,7 @@ const Main = () => {
                 <button
                   key={index}
                   className="card"
-                  onClick={() => onSent(text)} // Pass text directly to onSent
+                  onClick={() => onSent(text)}
                   aria-label={text}
                   disabled={loading}
                 >

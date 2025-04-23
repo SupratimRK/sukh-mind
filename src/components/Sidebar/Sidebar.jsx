@@ -1,12 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Menu, Plus, MessageSquare } from "lucide-react"; // Importing Lucide icons
+import { Menu, Plus, MessageSquare } from "lucide-react";
 import "./Sidebar.css";
 import { Context } from "../../context/Context";
 
 const Sidebar = () => {
   const [extended, setExtended] = useState(false);
-  const { onSent, prevPrompts, setRecentPrompt, newChat, loading } =
-    useContext(Context);
+  const {
+    onSent,
+    prevPrompts,
+    setRecentPrompt,
+    newChat,
+    loading,
+  } = useContext(Context);
 
   const loadPrompt = async (prompt) => {
     setRecentPrompt(prompt);
