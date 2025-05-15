@@ -12,13 +12,11 @@
     @apply min-h-screen flex;
   }
   
-  /* Fix for select options to ensure text is visible */
   option {
     @apply text-black bg-white;
     padding: 4px 8px;
   }
   
-  /* Add gradient animation for model selector */
   @keyframes gradient {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }

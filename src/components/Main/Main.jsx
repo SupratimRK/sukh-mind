@@ -72,7 +72,6 @@ const Main = () => {
     setSelectedModel(event.target.value);
   };
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -97,7 +96,7 @@ const Main = () => {
     rest: { scale: 1 },
     hover: { scale: 1.02, transition: { duration: 0.2 } },
     tap: { scale: 0.98 }
-  };  // Using Brain icon from lucide-react as the SukhMind logo
+  };  
   const SukhMindLogo = () => (
     <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-sukh-primary to-sukh-secondary shadow-sm">
       <Brain size={22} className="text-white" />
@@ -105,7 +104,7 @@ const Main = () => {
   );
   return (
     <main className="flex-1 max-h-[100svh] relative overflow-y-auto bg-white">
-      <nav className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 via-white to-purple-50 border-b border-sukh-border min-h-[68px] shadow-sm">
+      <nav className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 via-purple-100 to-blue-50 border-b border-sukh-border min-h-[68px] shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
             <SukhMindLogo />
@@ -120,16 +119,15 @@ const Main = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>
-          {modelsLoading ? (
+          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>          {modelsLoading ? (
             <div className="flex items-center gap-1.5 text-xs py-1.5 px-3 gradient-capsule rounded-full text-white shadow-sm">
               <LoaderCircle size={14} className="animate-spin" />
-              <span>Loading models...</span>
+              <span>Loading Gemini v2.0+...</span>
             </div>
           ) : modelsError ? (
             <div className="flex items-center gap-1.5 text-xs py-1.5 px-3 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full text-white shadow-sm">
               <AlertTriangle size={14} />
-              <span title={modelsError}>Using default models</span>
+              <span title={modelsError}>Using default v2.0+ models</span>
             </div>
           ) : (
             <div className="relative">
@@ -141,7 +139,6 @@ const Main = () => {
                 aria-label="Select AI Model"
                 className="appearance-none gradient-capsule border-2 border-blue-300 rounded-full py-1.5 px-3 pr-8 text-xs text-blue-600 font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
                 style={{
-                  // Remove backgroundImage for SVG arrow
                   background: 'none',
                 }}
               >

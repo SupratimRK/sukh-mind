@@ -14,62 +14,83 @@ const ContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
 
-  // Model states for dynamic fetching
+
   const [dynamicModels, setDynamicModels] = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState(null);
-  
-  // Find the newest Flash model in the available models array
+
   const findFlashModel = (models) => {
-    // First check for models newer than 2.0 (like 2.5, 3.0, etc.)
-    let newestModel = models.find(model => {
-      const modelName = model.name?.toLowerCase() || model.id.toLowerCase();
-      // Look for newer Flash models first
-      return (modelName.includes('flash') && 
-              (modelName.includes('gemini-3') || 
-               modelName.includes('gemini-2.5')));
+
+    const getVersionNumber = (model) => {
+      const modelNameOrId = (model.name?.toLowerCase() || model.id.toLowerCase());
+
+      const versionMatch = modelNameOrId.match(/gemini-(\d+\.\d+)/);
+      return versionMatch ? parseFloat(versionMatch[1]) : 0;
+    };
+
+
+    const modernModels = models.filter(model => {
+      const version = getVersionNumber(model);
+      return version >= 2.0;
     });
-    
-    if (!newestModel) {
-      // If no newer Flash models, look for 2.0 Flash
-      newestModel = models.find(model => 
-        (model.id.toLowerCase().includes('gemini-2.0-flash') || 
-        (model.name?.toLowerCase().includes('2.0') && 
-         model.name?.toLowerCase().includes('flash')))
-      );
+
+
+    const filteredModels = modernModels.length > 0 ? modernModels : models;
+
+
+    const flashModels = filteredModels.filter(model => {
+      const modelNameOrId = (model.name?.toLowerCase() || model.id.toLowerCase());
+      return modelNameOrId.includes('flash');
+    });
+
+    if (flashModels.length === 0) {
+
+      const selectedId = filteredModels.length > 0 ? filteredModels[0].id : availableModels[0].id;
+      console.info(`No Flash models found, using ${selectedId}`);
+      return selectedId;
     }
 
-    if (!newestModel) {
-      // If still not found, get any Flash model
-      const flashModels = models.filter(model => 
-        model.id.toLowerCase().includes('flash') || 
-        (model.name?.toLowerCase()?.includes('flash'))
-      );
-      
-      if (flashModels.length > 0) {
-        // Get the last flash model in the list (newest)
-        newestModel = flashModels[flashModels.length - 1];
-      }
-    }
-    
-    // If found, return it, otherwise return the first model in the list
-    return newestModel ? newestModel.id : (models.length > 0 ? models[0].id : availableModels[0].id);
+
+    const sortedFlashModels = [...flashModels].sort((a, b) => {
+      return getVersionNumber(b) - getVersionNumber(a);
+    });
+
+
+    console.info("Available Flash models (sorted by version):",
+      sortedFlashModels.map(m => `${m.id} (v${getVersionNumber(m)})`).join(', '));
+
+
+    const thinkingFlashModel = sortedFlashModels.find(model => {
+      const modelNameOrId = (model.name?.toLowerCase() || model.id.toLowerCase());
+      return modelNameOrId.includes('think');
+    });
+
+
+    const selectedId = thinkingFlashModel ? thinkingFlashModel.id : sortedFlashModels[0].id;
+    console.info(`Selected model: ${selectedId} ${thinkingFlashModel ? '(thinking capable)' : '(highest version)'}`);
+    return selectedId;
   };
 
-  // Initialize with default model
+
   const [selectedModel, setSelectedModel] = useState(findFlashModel(availableModels));
 
-  // Fetch models on component mount
   useEffect(() => {
     const getModels = async () => {
       try {
         const fetchedModels = await fetchAvailableModels();
         if (fetchedModels && fetchedModels.length > 0) {
+          console.info(`Loaded ${fetchedModels.length} Gemini models v2.0+:`,
+            fetchedModels.map(m => m.id).join(', '));
+
           setDynamicModels(fetchedModels);
-          // Select the latest Flash model if available
-          setSelectedModel(findFlashModel(fetchedModels));
+
+
+          const selectedFlashModelId = findFlashModel(fetchedModels);
+          console.info(`Selected model: ${selectedFlashModelId}`);
+          setSelectedModel(selectedFlashModelId);
         } else {
-          // Fallback to hardcoded models if API returns empty
+
+          console.warn('No Gemini v2.0+ models returned from API. Using fallback models.');
           setDynamicModels(availableModels);
           setSelectedModel(findFlashModel(availableModels));
         }
@@ -147,7 +168,7 @@ const ContextProvider = ({ children }) => {
     showResult,
     loading,
     resultData,
-    // Provide both the dynamic models and their loading/error state
+
     availableModels: dynamicModels.length > 0 ? dynamicModels : availableModels,
     modelsLoading,
     modelsError,

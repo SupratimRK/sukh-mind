@@ -4,7 +4,6 @@ import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Main from "./components/Main/Main.jsx";
 
 const App = () => {
-  // Set dark mode by default to match Gemini's look
   useEffect(() => {
     document.documentElement.classList.add('dark');
   }, []);

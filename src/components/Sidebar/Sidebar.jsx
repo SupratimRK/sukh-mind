@@ -18,7 +18,6 @@ const Sidebar = () => {
     await onSent(prompt);
   };
 
-  // Animation variants
   const sidebarVariants = {
     collapsed: { width: "80px" },
     extended: { width: "240px" }
@@ -67,7 +66,7 @@ const Sidebar = () => {
           {extended && <span className="text-sm">Wellness Resources</span>}
         </motion.button>
 
-        {/* Recent section */}
+        {/* recent sec */}
         {extended && (
           <div className="mt-6 px-4">
             <p className="text-sukh-text-secondary text-sm font-medium mb-3">Recent</p>
@@ -98,7 +97,7 @@ const Sidebar = () => {
         )}
       </div>
       
-      {/* Settings button at the bottom */}
+      {/* settings - dummy */}
       <div className="mt-auto">
         <motion.button 
           className={`flex items-center gap-3 py-2.5 px-4 rounded-full hover:bg-sukh-hover transition-colors text-sukh-text-primary mb-2 ${extended ? "mx-2" : "mx-auto justify-center w-12 h-12"}`}
