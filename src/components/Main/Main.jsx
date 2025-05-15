@@ -135,9 +135,9 @@ const Main = () => {
               onChange={handleModelChange}
               disabled={loading}
               aria-label="Select AI Model"
-              className="appearance-none gradient-capsule border-none rounded-full py-1.5 px-3 pr-8 text-xs text-white font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
+              className="appearance-none gradient-capsule border-2 border-blue-300 rounded-full py-1.5 px-3 pr-8 text-xs text-blue-600 font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
               style={{
-                backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23ffffff" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>')`,
+                backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%232563eb" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>')`,
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right 8px center',
                 backgroundSize: '12px 12px'
