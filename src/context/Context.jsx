@@ -18,7 +18,46 @@ const ContextProvider = ({ children }) => {
   const [dynamicModels, setDynamicModels] = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState(null);
-  const [selectedModel, setSelectedModel] = useState(availableModels[0].id);
+  
+  // Find the newest Flash model in the available models array
+  const findFlashModel = (models) => {
+    // First check for models newer than 2.0 (like 2.5, 3.0, etc.)
+    let newestModel = models.find(model => {
+      const modelName = model.name?.toLowerCase() || model.id.toLowerCase();
+      // Look for newer Flash models first
+      return (modelName.includes('flash') && 
+              (modelName.includes('gemini-3') || 
+               modelName.includes('gemini-2.5')));
+    });
+    
+    if (!newestModel) {
+      // If no newer Flash models, look for 2.0 Flash
+      newestModel = models.find(model => 
+        (model.id.toLowerCase().includes('gemini-2.0-flash') || 
+        (model.name?.toLowerCase().includes('2.0') && 
+         model.name?.toLowerCase().includes('flash')))
+      );
+    }
+
+    if (!newestModel) {
+      // If still not found, get any Flash model
+      const flashModels = models.filter(model => 
+        model.id.toLowerCase().includes('flash') || 
+        (model.name?.toLowerCase()?.includes('flash'))
+      );
+      
+      if (flashModels.length > 0) {
+        // Get the last flash model in the list (newest)
+        newestModel = flashModels[flashModels.length - 1];
+      }
+    }
+    
+    // If found, return it, otherwise return the first model in the list
+    return newestModel ? newestModel.id : (models.length > 0 ? models[0].id : availableModels[0].id);
+  };
+
+  // Initialize with default model
+  const [selectedModel, setSelectedModel] = useState(findFlashModel(availableModels));
 
   // Fetch models on component mount
   useEffect(() => {
@@ -27,16 +66,18 @@ const ContextProvider = ({ children }) => {
         const fetchedModels = await fetchAvailableModels();
         if (fetchedModels && fetchedModels.length > 0) {
           setDynamicModels(fetchedModels);
-          // Set the first fetched model as selected if we have fetched models
-          setSelectedModel(fetchedModels[0].id);
+          // Select the latest Flash model if available
+          setSelectedModel(findFlashModel(fetchedModels));
         } else {
           // Fallback to hardcoded models if API returns empty
           setDynamicModels(availableModels);
+          setSelectedModel(findFlashModel(availableModels));
         }
       } catch (error) {
         console.error("Failed to fetch models:", error);
         setModelsError("Failed to load available models. Using default models instead.");
         setDynamicModels(availableModels);
+        setSelectedModel(findFlashModel(availableModels));
       } finally {
         setModelsLoading(false);
       }

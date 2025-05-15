@@ -96,34 +96,15 @@ const Main = () => {
     rest: { scale: 1 },
     hover: { scale: 1.02, transition: { duration: 0.2 } },
     tap: { scale: 0.98 }
-  };  // Custom SVG logo for SukhMind AI
+  };  // Using Brain icon from lucide-react as the SukhMind logo
   const SukhMindLogo = () => (
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sukhGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#4f46e5" />
-          <stop offset="100%" stopColor="#818cf8" />
-        </linearGradient>
-        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur stdDeviation="2" result="glow"/>
-          <feMerge>
-            <feMergeNode in="glow"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
-      </defs>
-      <circle cx="18" cy="18" r="16" fill="url(#sukhGradient)" opacity="0.9" />
-      <path d="M18 8C13 8 9 12 9 17C9 22 13 26 18 26C23 26 27 22 27 17" 
-        stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <path d="M18 14 L18 20 M15 17 L21 17" 
-        stroke="white" strokeWidth="2" strokeLinecap="round" />
-      <path d="M27 13 A3 3 0 1 1 27 13.01" 
-        stroke="white" strokeWidth="2" strokeLinecap="round" />
-    </svg>
+    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-sukh-primary to-sukh-secondary shadow-sm">
+      <Brain size={22} className="text-white" />
+    </div>
   );
   return (
     <main className="flex-1 max-h-[100svh] relative overflow-y-auto bg-white">
-      <nav className="flex items-center justify-between p-3 bg-gradient-to-r from-sukh-light via-white to-sukh-light border-b border-sukh-border min-h-[68px] shadow-sm">
+      <nav className="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 via-white to-purple-50 border-b border-sukh-border min-h-[68px] shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
             <SukhMindLogo />
@@ -138,27 +119,25 @@ const Main = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>
-          {modelsLoading ? (
-            <div className="flex items-center gap-1.5 text-xs py-1 px-3 bg-sukh-light rounded-full text-sukh-text-secondary">
+          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>          {modelsLoading ? (
+            <div className="flex items-center gap-1.5 text-xs py-1.5 px-3 gradient-capsule rounded-full text-white shadow-sm">
               <LoaderCircle size={14} className="animate-spin" />
               <span>Loading models...</span>
             </div>
           ) : modelsError ? (
-            <div className="flex items-center gap-1.5 text-xs py-1 px-3 bg-sukh-light rounded-full text-amber-600">
+            <div className="flex items-center gap-1.5 text-xs py-1.5 px-3 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full text-white shadow-sm">
               <AlertTriangle size={14} />
               <span title={modelsError}>Using default models</span>
             </div>
-          ) : (
-            <select
+          ) : (            <select
               id="model-select-main"
               value={selectedModel}
               onChange={handleModelChange}
               disabled={loading}
               aria-label="Select AI Model"
-              className="appearance-none bg-sukh-light border-none rounded-full py-1.5 px-3 pr-8 text-xs text-sukh-text-primary cursor-pointer outline-none hover:bg-sukh-hover disabled:cursor-not-allowed disabled:opacity-70 disabled:bg-sukh-hover"
+              className="appearance-none gradient-capsule border-none rounded-full py-1.5 px-3 pr-8 text-xs text-white font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
               style={{
-                backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%235f6368" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>')`,
+                backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%23ffffff" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>')`,
                 backgroundRepeat: 'no-repeat',
                 backgroundPosition: 'right 8px center',
                 backgroundSize: '12px 12px'
