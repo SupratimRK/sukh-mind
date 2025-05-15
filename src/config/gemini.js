@@ -14,13 +14,12 @@ if (!apiKey) {
 
 const genAI = new GoogleGenerativeAI(apiKey || "MISSING_API_KEY");
   
-// Define available models; you can add or remove models as needed
-// I am testing with gemini v1 models, you can add v2 models as well
-// add  according to your needs
+// Define available text generation models; you can add or remove models as needed
+// These are specifically text generation models for conversational AI
 export const availableModels = [
   { id: "gemini-1.5-pro-latest", name: "Gemini 1.5 Pro" },
   { id: "gemini-1.5-flash-latest", name: "Gemini 1.5 Flash" },
-  // experimental models
+  // experimental text models
   { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash (Experimental)" },
   { id: "gemini-2.0-flash-thinking-exp-01-21", name: "Gemini 2.0 Think Flash (Experimental)" },
   { id: "gemini-2.5-pro-exp-03-25", name: "Gemini 2.5 Pro (Experimental)" },
@@ -47,7 +46,24 @@ export const fetchAvailableModels = async () => {
     const data = await response.json();
     // Ensure data.models exists and is an array before mapping
     if (data && Array.isArray(data.models)) {
-      return data.models.map(model => ({
+      // Filter for text generation models only (excludes embedding, vision, and other specialized models)
+      const textGenerationModels = data.models.filter(model => {
+        // Check if the model is for text generation based on name and supported generation methods
+        const isTextModel = 
+          (model.name.includes('gemini') || model.name.includes('palm')) &&
+          !model.name.includes('vision') &&
+          !model.name.includes('embedding') &&
+          !model.name.includes('multimodal');
+          
+        // Look at supportedGenerationMethods if available
+        if (model.supportedGenerationMethods && Array.isArray(model.supportedGenerationMethods)) {
+          return isTextModel && model.supportedGenerationMethods.includes('generateContent');
+        }
+        
+        return isTextModel;
+      });
+      
+      return textGenerationModels.map(model => ({
         id: model.name.startsWith("models/") ? model.name.substring("models/".length) : model.name, // Extract ID from "models/model-id"
         name: model.displayName || model.name,
       }));
