@@ -15,6 +15,7 @@ import {
   LoaderCircle,
   AlertTriangle,
   Mic,
+  ChevronDown,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Context } from "../../context/Context.jsx";
@@ -119,7 +120,8 @@ const Main = () => {
         </div>
         
         <div className="flex items-center gap-2">
-          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>          {modelsLoading ? (
+          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>
+          {modelsLoading ? (
             <div className="flex items-center gap-1.5 text-xs py-1.5 px-3 gradient-capsule rounded-full text-white shadow-sm">
               <LoaderCircle size={14} className="animate-spin" />
               <span>Loading models...</span>
@@ -129,26 +131,28 @@ const Main = () => {
               <AlertTriangle size={14} />
               <span title={modelsError}>Using default models</span>
             </div>
-          ) : (            <select
-              id="model-select-main"
-              value={selectedModel}
-              onChange={handleModelChange}
-              disabled={loading}
-              aria-label="Select AI Model"
-              className="appearance-none gradient-capsule border-2 border-blue-300 rounded-full py-1.5 px-3 pr-8 text-xs text-blue-600 font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
-              style={{
-                backgroundImage: `url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="%232563eb" viewBox="0 0 16 16"><path d="M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/></svg>')`,
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'right 8px center',
-                backgroundSize: '12px 12px'
-              }}
-            >
-              {availableModels.map((model) => (
-                <option key={model.id} value={model.id}>
-                  {formatModelName(model.name)}
-                </option>
-              ))}
-            </select>
+          ) : (
+            <div className="relative">
+              <select
+                id="model-select-main"
+                value={selectedModel}
+                onChange={handleModelChange}
+                disabled={loading}
+                aria-label="Select AI Model"
+                className="appearance-none gradient-capsule border-2 border-blue-300 rounded-full py-1.5 px-3 pr-8 text-xs text-blue-600 font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
+                style={{
+                  // Remove backgroundImage for SVG arrow
+                  background: 'none',
+                }}
+              >
+                {availableModels.map((model) => (
+                  <option key={model.id} value={model.id}>
+                    {formatModelName(model.name)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown size={16} className="pointer-events-none text-blue-600 absolute right-3 top-1/2 -translate-y-1/2" />
+            </div>
           )}
         </div>
       </nav>
