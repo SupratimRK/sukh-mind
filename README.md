@@ -72,6 +72,19 @@ npm run dev
 
 Access the application at [`http://localhost:5173`](http://localhost:3000).
 
+## 📸 Screenshots
+
+Here are some screenshots of the Sukh-Mind application in action:
+
+### Home Screen
+![Home Screen](./screenshot/sc%20(1).png)
+
+### Chat Interface
+![Chat Interface](./screenshot/sc%20(2).png)
+
+### Model Selection
+![Model Selection](./screenshot/sc%20(3).png)
+
 ## 🤝 Contribution Guidelines
 
 We welcome contributions! Follow these steps to contribute:
