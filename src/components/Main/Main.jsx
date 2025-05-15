@@ -30,6 +30,7 @@ const Main = () => {
     resultData,
     setInput,
     input,
+    conversations,
     selectedModel,
     setSelectedModel,
     availableModels,
@@ -38,6 +39,14 @@ const Main = () => {
   } = useContext(Context);
   const resultRef = useRef(null);
   const [rows, setRows] = useState(1);
+
+  // Check for existing conversation on mount
+  useEffect(() => {
+    // If there's result data saved and showResult is true, restore the chat view
+    if (resultData && showResult) {
+      console.log("Restoring previous chat session");
+    }
+  }, []);
 
   useEffect(() => {
     const updateRows = () => setRows(window.innerWidth <= 600 ? 2 : 1);

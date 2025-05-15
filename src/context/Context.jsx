@@ -5,19 +5,52 @@ import runChat, { availableModels, fetchAvailableModels } from "../config/gemini
 export const Context = createContext();
 
 const ContextProvider = ({ children }) => {
+  // Load data from localStorage if available
+  const getSavedData = (key, defaultValue) => {
+    try {
+      const savedValue = localStorage.getItem(key);
+      return savedValue ? JSON.parse(savedValue) : defaultValue;
+    } catch (error) {
+      console.error(`Error loading ${key} from localStorage:`, error);
+      return defaultValue;
+    }
+  };
 
   const [input, setInput] = useState("");
-  const [recentPrompt, setRecentPrompt] = useState("");
-  const [prevPrompts, setPrevPrompts] = useState([]);
+  const [recentPrompt, setRecentPrompt] = useState(getSavedData("recentPrompt", ""));
+  const [prevPrompts, setPrevPrompts] = useState(getSavedData("prevPrompts", []));
+  
+  // Add conversations to store full chat history (user messages and AI responses)
+  const [conversations, setConversations] = useState(getSavedData("conversations", []));
 
-  const [showResult, setShowResult] = useState(false);
+  const [showResult, setShowResult] = useState(getSavedData("showResult", false));
   const [loading, setLoading] = useState(false);
-  const [resultData, setResultData] = useState("");
-
+  const [resultData, setResultData] = useState(getSavedData("resultData", ""));
 
   const [dynamicModels, setDynamicModels] = useState([]);
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState(null);
+
+  // Save data to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("prevPrompts", JSON.stringify(prevPrompts));
+  }, [prevPrompts]);
+
+  useEffect(() => {
+    localStorage.setItem("conversations", JSON.stringify(conversations));
+  }, [conversations]);
+
+  useEffect(() => {
+    localStorage.setItem("recentPrompt", JSON.stringify(recentPrompt));
+  }, [recentPrompt]);
+
+  useEffect(() => {
+    localStorage.setItem("resultData", JSON.stringify(resultData));
+  }, [resultData]);
+
+  useEffect(() => {
+    localStorage.setItem("showResult", JSON.stringify(showResult));
+  }, [showResult]);
 
   const findFlashModel = (models) => {
 
@@ -72,7 +105,12 @@ const ContextProvider = ({ children }) => {
   };
 
 
-  const [selectedModel, setSelectedModel] = useState(findFlashModel(availableModels));
+  const [selectedModel, setSelectedModel] = useState(getSavedData("selectedModel", findFlashModel(availableModels)));
+  
+  // Save selectedModel to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem("selectedModel", JSON.stringify(selectedModel));
+  }, [selectedModel]);
 
   useEffect(() => {
     const getModels = async () => {
@@ -84,10 +122,17 @@ const ContextProvider = ({ children }) => {
 
           setDynamicModels(fetchedModels);
 
-
-          const selectedFlashModelId = findFlashModel(fetchedModels);
-          console.info(`Selected model: ${selectedFlashModelId}`);
-          setSelectedModel(selectedFlashModelId);
+          // Check if the user's previously selected model is available
+          const savedModel = getSavedData("selectedModel", null);
+          if (savedModel && fetchedModels.some(model => model.id === savedModel)) {
+            console.info(`Using previously selected model: ${savedModel}`);
+            // User's previously selected model is available, keep using it
+          } else {
+            // No saved model or saved model is not available, select default
+            const selectedFlashModelId = findFlashModel(fetchedModels);
+            console.info(`Selected model: ${selectedFlashModelId} (no valid saved preference found)`);
+            setSelectedModel(selectedFlashModelId);
+          }
         } else {
 
           console.warn('No Gemini v2.0+ models returned from API. Using fallback models.');
@@ -120,7 +165,28 @@ const ContextProvider = ({ children }) => {
     setLoading(false);
     setShowResult(false);
     setResultData("");
+    setRecentPrompt("");
+    // We don't clear prevPrompts or conversations here to maintain chat history
+    // Just reset the current chat state to start a new conversation
+    
+    // Update localStorage to reflect the new chat state
+    localStorage.setItem("showResult", JSON.stringify(false));
+    localStorage.setItem("resultData", JSON.stringify(""));
+    localStorage.setItem("recentPrompt", JSON.stringify(""));
   };
+
+  const clearChatHistory = useCallback(() => {
+    setPrevPrompts([]);
+    setRecentPrompt("");
+    setResultData("");
+    setShowResult(false);
+    setConversations([]);
+    localStorage.removeItem("prevPrompts");
+    localStorage.removeItem("recentPrompt");
+    localStorage.removeItem("resultData");
+    localStorage.removeItem("showResult");
+    localStorage.removeItem("conversations");
+  }, []);
 
   const onSent = async (prompt) => {
     setResultData("");
@@ -135,6 +201,22 @@ const ContextProvider = ({ children }) => {
 
     try {
       const response = await runChat(userPrompt, selectedModel);
+      
+      // Save the conversation with both user prompt and AI response
+      setConversations(prev => [
+        ...prev, 
+        {
+          role: "user",
+          content: userPrompt,
+          timestamp: new Date().toISOString()
+        },
+        {
+          role: "assistant",
+          content: response,
+          timestamp: new Date().toISOString()
+        }
+      ]);
+      
       processResponse(response);
     } catch (error) {
       console.error("Error fetching response:", error);
@@ -163,8 +245,11 @@ const ContextProvider = ({ children }) => {
     setRecentPrompt,
     prevPrompts,
     setPrevPrompts,
+    conversations,
+    setConversations,
     onSent,
     newChat,
+    clearChatHistory,
     showResult,
     loading,
     resultData,

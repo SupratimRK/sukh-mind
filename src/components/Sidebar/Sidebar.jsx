@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Menu, Plus, MessageSquare, Heart, Settings } from "lucide-react";
+import { Menu, Plus, MessageSquare, Heart, Settings, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Context } from "../../context/Context";
 
@@ -10,6 +10,7 @@ const Sidebar = () => {
     prevPrompts,
     setRecentPrompt,
     newChat,
+    clearChatHistory,
     loading,
   } = useContext(Context);
 
@@ -69,7 +70,21 @@ const Sidebar = () => {
         {/* recent sec */}
         {extended && (
           <div className="mt-6 px-4">
-            <p className="text-sukh-text-secondary text-sm font-medium mb-3">Recent</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sukh-text-secondary text-sm font-medium">Recent</p>
+              {prevPrompts.length > 0 && (
+                <motion.button
+                  onClick={clearChatHistory}
+                  className="p-1.5 text-sukh-text-secondary hover:text-red-500 rounded-full hover:bg-red-50 transition-colors"
+                  title="Clear chat history"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={loading}
+                >
+                  <Trash2 size={14} />
+                </motion.button>
+              )}
+            </div>
             <motion.div 
               className="flex flex-col gap-1"
               initial="hidden"
@@ -106,6 +121,15 @@ const Sidebar = () => {
         >
           <Settings size={20} />
           {extended && <span className="text-sm">Settings</span>}
+        </motion.button>
+        <motion.button 
+          onClick={clearChatHistory}
+          className={`flex items-center gap-3 py-2.5 px-4 rounded-full hover:bg-sukh-hover transition-colors text-sukh-text-primary ${extended ? "mx-2" : "mx-auto justify-center w-12 h-12"}`}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <Trash2 size={20} />
+          {extended && <span className="text-sm">Clear History</span>}
         </motion.button>
       </div>
     </motion.aside>
