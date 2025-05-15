@@ -1,11 +1,20 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Outfit", sans-serif;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-#root {
-  min-height: 100vh;
-  display: flex;
+@layer base {
+  * {
+    @apply box-border m-0 p-0;
+    font-family: "Outfit", sans-serif;
+  }
+  
+  #root {
+    @apply min-h-screen flex;
+  }
+  
+  /* Fix for select options to ensure text is visible */
+  option {
+    @apply text-black bg-white;
+    padding: 4px 8px;
+  }
 }

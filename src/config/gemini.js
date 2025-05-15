@@ -26,6 +26,41 @@ export const availableModels = [
   { id: "gemini-2.5-pro-exp-03-25", name: "Gemini 2.5 Pro (Experimental)" },
 ];
 
+// Helper function to format model names for display
+export const formatModelName = (modelName) => {
+  return modelName
+    .replace("Gemini ", "")
+    .replace(" (Experimental)", " (exp)");
+};
+
+// Function to fetch available models dynamically from the API
+export const fetchAvailableModels = async () => {
+  if (!apiKey) {
+    console.error("API Key is missing. Cannot fetch models.");
+    return []; // Or throw an error
+  }
+  try {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch models: ${response.status} ${response.statusText}`);
+    }
+    const data = await response.json();
+    // Ensure data.models exists and is an array before mapping
+    if (data && Array.isArray(data.models)) {
+      return data.models.map(model => ({
+        id: model.name.startsWith("models/") ? model.name.substring("models/".length) : model.name, // Extract ID from "models/model-id"
+        name: model.displayName || model.name,
+      }));
+    } else {
+      console.error("Fetched data does not contain a models array:", data);
+      return []; // Or throw an error
+    }
+  } catch (error) {
+    console.error("Error fetching available models:", error);
+    return []; // Or throw an error, or return a default/fallback list
+  }
+};
+
 const generationConfig = {
   temperature: 1,
   topP: 0.95,
