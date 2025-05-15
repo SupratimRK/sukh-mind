@@ -104,8 +104,8 @@ const Main = () => {
   );
   return (
     <main className="flex-1 max-h-[100svh] relative overflow-y-auto bg-white">
-      <nav className="flex items-center justify-between p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-sukh-border min-h-[60px] sm:min-h-[68px] shadow-sm">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-2 sm:p-3 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-sukh-border min-h-[60px] sm:min-h-[68px] shadow-sm">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <div className="flex items-center justify-center">
             <SukhMindLogo />
           </div>
@@ -115,11 +115,46 @@ const Main = () => {
               <span className="text-sukh-text-primary"> AI</span>
             </p>
             <p className="text-[10px] sm:text-xs text-sukh-text-secondary mt-0.5">Supporting your mental wellness journey</p>
+            {/* Model selector for small screens */}
+            <div className="block sm:hidden mt-2">
+              <span className="text-xs text-sukh-text-secondary mr-2">Select Model:</span>
+              {modelsLoading ? (
+                <div className="flex items-center gap-1.5 text-[10px] py-1 px-2 gradient-capsule rounded-full text-white shadow-sm">
+                  <LoaderCircle size={12} className="animate-spin" />
+                  <span>Loading...</span>
+                </div>
+              ) : modelsError ? (
+                <div className="flex items-center gap-1.5 text-[10px] py-1 px-2 bg-gradient-to-r from-amber-400 to-orange-400 rounded-full text-white shadow-sm">
+                  <AlertTriangle size={12} />
+                  <span title={modelsError}>Using default</span>
+                </div>
+              ) : (
+                <div className="relative inline-block">
+                  <select
+                    id="model-select-main-mobile"
+                    value={selectedModel}
+                    onChange={handleModelChange}
+                    disabled={loading}
+                    aria-label="Select AI Model"
+                    className="appearance-none gradient-capsule border-2 border-blue-300 rounded-full py-1 px-2 pr-7 text-[10px] text-blue-600 font-medium cursor-pointer outline-none hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70 shadow-sm"
+                    style={{ background: 'none' }}
+                  >
+                    {availableModels.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {formatModelName(model.name)}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="pointer-events-none text-blue-600 absolute right-2 top-1/2 -translate-y-1/2" />
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        
-        <div className="flex items-center gap-1 sm:gap-2">
-          <span className="text-sm text-sukh-text-secondary hidden md:block">Select Model:</span>          {modelsLoading ? (
+        {/* Model selector for desktop */}
+        <div className="hidden sm:flex items-center gap-1 sm:gap-2">
+          <span className="text-sm text-sukh-text-secondary">Select Model:</span>
+          {modelsLoading ? (
             <div className="flex items-center gap-1.5 text-[10px] sm:text-xs py-1 sm:py-1.5 px-2 sm:px-3 gradient-capsule rounded-full text-white shadow-sm">
               <LoaderCircle size={12} className="animate-spin" />
               <span>Loading...</span>
@@ -153,6 +188,7 @@ const Main = () => {
           )}
         </div>
       </nav>
+      {/* Hide sidebar on small screens: add responsive logic in Sidebar component */}
       
       <div className="p-3 sm:p-4 md:p-6 h-[calc(100vh-130px)] sm:h-[calc(100vh-140px)] overflow-y-auto">
         {!showResult ? (

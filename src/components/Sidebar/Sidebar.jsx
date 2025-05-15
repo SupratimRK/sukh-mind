@@ -30,7 +30,7 @@ const Sidebar = () => {
 
   return (
     <motion.aside
-      className="min-h-screen inline-flex flex-col justify-between bg-sukh-light py-4 px-2.5 z-50 select-none fixed md:relative shadow-md"
+      className="min-h-screen flex-col justify-between bg-sukh-light py-4 px-2.5 z-50 select-none fixed md:relative shadow-md hidden sm:flex"
       animate={extended ? "extended" : "collapsed"}
       variants={sidebarVariants}
       initial="collapsed"
